@@ -1,6 +1,6 @@
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
 //MARK: - Private property
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private lazy var dateFormatter: DateFormatter = {
@@ -12,7 +12,8 @@ class ImagesListViewController: UIViewController {
     }()
     
     //MARK: - Outlets
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private var tableView: UITableView!
+    
     //MARK: - LyfeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
