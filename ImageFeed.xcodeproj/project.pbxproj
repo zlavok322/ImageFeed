@@ -17,6 +17,7 @@
 		526E496629589952004470EC /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526E496529589952004470EC /* ImagesListCell.swift */; };
 		526E496929589984004470EC /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526E496829589984004470EC /* UIColor+Extensions.swift */; };
 		526E496C2958A931004470EC /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 526E496B2958A931004470EC /* SF-Pro.ttf */; };
+		529769D62967361D00D09297 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529769D52967361D00D09297 /* SingleImageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		526E496529589952004470EC /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
 		526E496829589984004470EC /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		526E496B2958A931004470EC /* SF-Pro.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro.ttf"; sourceTree = "<group>"; };
+		529769D52967361D00D09297 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 		526E494F295898E3004470EC /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				529769D52967361D00D09297 /* SingleImageViewController.swift */,
 				524E75A82962DAA4004EFEEC /* Profile */,
 				526E49642958991F004470EC /* ImageList */,
 				526E496729589971004470EC /* Helpers */,
@@ -202,6 +205,7 @@
 				524E75AA2962DAC2004EFEEC /* ProfileViewController.swift in Sources */,
 				526E4955295898E3004470EC /* ImagesListViewController.swift in Sources */,
 				526E496929589984004470EC /* UIColor+Extensions.swift in Sources */,
+				529769D62967361D00D09297 /* SingleImageViewController.swift in Sources */,
 				526E496629589952004470EC /* ImagesListCell.swift in Sources */,
 				526E4951295898E3004470EC /* AppDelegate.swift in Sources */,
 				526E4953295898E3004470EC /* SceneDelegate.swift in Sources */,
