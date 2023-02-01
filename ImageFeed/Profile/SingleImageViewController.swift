@@ -1,9 +1,3 @@
-//
-//  SingleImageViewController.swift
-//  ImageFeed
-//
-//  Created by Слава Шестаков on 05.01.2023.
-//
 
 import UIKit
 
