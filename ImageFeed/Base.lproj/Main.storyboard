@@ -323,11 +323,7 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nUN-bq-AEg">
-                                <rect key="frame" x="16" y="61" width="48" height="48"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="48" id="7bt-mD-lKP"/>
-                                    <constraint firstAttribute="height" constant="48" id="GEE-hG-fn9"/>
-                                </constraints>
+                                <rect key="frame" x="16" y="61" width="9" height="22"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="chevronBlack.backward">
                                     <color key="titleColor" name="YPBlack"/>
@@ -337,23 +333,21 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dMd-dO-zfS">
-                                <rect key="frame" x="0.0" y="105" width="414" height="4"/>
+                                <rect key="frame" x="0.0" y="81" width="414" height="4"/>
                                 <color key="progressTintColor" name="YPBlack"/>
                             </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bep-nG-D0X"/>
                         <color key="backgroundColor" name="YPWhite"/>
                         <constraints>
-                            <constraint firstItem="nUN-bq-AEg" firstAttribute="leading" secondItem="Bep-nG-D0X" secondAttribute="leading" constant="16" id="7mc-et-pYc"/>
                             <constraint firstItem="b0Z-c1-p7d" firstAttribute="leading" secondItem="9M1-Z6-7Gs" secondAttribute="leading" id="9FA-Sk-QBJ"/>
-                            <constraint firstItem="nUN-bq-AEg" firstAttribute="top" secondItem="Bep-nG-D0X" secondAttribute="top" constant="13" id="JdM-jD-yli"/>
+                            <constraint firstItem="nUN-bq-AEg" firstAttribute="top" secondItem="Bep-nG-D0X" secondAttribute="top" constant="13" id="J7t-YR-aGf"/>
                             <constraint firstItem="b0Z-c1-p7d" firstAttribute="top" secondItem="9M1-Z6-7Gs" secondAttribute="top" id="K6W-hl-xCh"/>
-                            <constraint firstItem="dMd-dO-zfS" firstAttribute="bottom" secondItem="nUN-bq-AEg" secondAttribute="bottom" id="X1p-Uq-94J"/>
+                            <constraint firstItem="dMd-dO-zfS" firstAttribute="bottom" secondItem="nUN-bq-AEg" secondAttribute="bottom" constant="2" id="X1p-Uq-94J"/>
                             <constraint firstItem="dMd-dO-zfS" firstAttribute="leading" secondItem="9M1-Z6-7Gs" secondAttribute="leading" id="axn-BW-p9x"/>
-                            <constraint firstItem="nUN-bq-AEg" firstAttribute="leading" secondItem="Bep-nG-D0X" secondAttribute="leading" constant="16" id="dPA-GH-gor"/>
-                            <constraint firstItem="nUN-bq-AEg" firstAttribute="top" secondItem="Bep-nG-D0X" secondAttribute="top" constant="13" id="mOV-Ma-uO4"/>
                             <constraint firstAttribute="trailing" secondItem="b0Z-c1-p7d" secondAttribute="trailing" id="pel-lw-ftH"/>
                             <constraint firstAttribute="trailing" secondItem="dMd-dO-zfS" secondAttribute="trailing" id="xMH-0e-owc"/>
+                            <constraint firstItem="nUN-bq-AEg" firstAttribute="leading" secondItem="Bep-nG-D0X" secondAttribute="leading" constant="16" id="yfa-33-pRZ"/>
                             <constraint firstAttribute="bottom" secondItem="b0Z-c1-p7d" secondAttribute="bottom" id="zcV-gV-ysJ"/>
                         </constraints>
                     </view>
