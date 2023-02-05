@@ -13,10 +13,14 @@ final class OAuth2TokenStorage: OAuth2TokenStorageProtocol {
     
     var token: String? {
         get {
-            return userDefaults.string(forKey: Keys.token.rawValue)
+            UserDefaults.standard.string(forKey: Keys.token.rawValue)
         }
         set {
-            userDefaults.set(newValue, forKey: Keys.token.rawValue)
+            if let token = newValue {
+                UserDefaults.standard.set(token, forKey: Keys.token.rawValue)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Keys.token.rawValue)
+            }
         }
     }
 }
