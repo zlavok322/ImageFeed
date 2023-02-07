@@ -3,7 +3,7 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    //MARK: - Interface
+    //MARK: - Properties
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +40,7 @@ class ProfileViewController: UIViewController {
         return label
     }()
     
-    private var logoutButton: UIButton = {
+    private lazy var logoutButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "ipad.and.arrow.forward"), for: .normal)
@@ -55,7 +55,7 @@ class ProfileViewController: UIViewController {
         applyConstraints()
     }
     
-    //MARK: - Methods
+    //MARK: - Objc Methods
     @objc func didTapLogoutButton() {
         print("didTapLogoutButton")
     }
