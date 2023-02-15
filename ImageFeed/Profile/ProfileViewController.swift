@@ -1,7 +1,12 @@
 
 import UIKit
+import Kingfisher
 
 class ProfileViewController: UIViewController {
+    
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     //MARK: - Properties
     private let avatarImageView: UIImageView = {
@@ -51,13 +56,48 @@ class ProfileViewController: UIViewController {
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.backgroundColor = .ypBlack
+        
         addSubViews()
         applyConstraints()
+        
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.DidChangeNotification,
+                object: nil,
+                queue: .main,
+                using: { [weak self] _ in
+                    guard let self else { return }
+                    self.updateAvatar()
+                })
+        
+        updateAvatar()
     }
     
     //MARK: - Objc Methods
     @objc func didTapLogoutButton() {
         print("didTapLogoutButton")
+    }
+    
+    //MARK: - Functions
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageUrl = profileImageService.avatarURL,
+            let url = URL(string: profileImageUrl)
+        else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 35.0)
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "DefaultAvatar"), options: [.processor(processor)])
     }
     
     func addSubViews() {
