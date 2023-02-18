@@ -34,9 +34,6 @@ final class WebViewViewController: UIViewController {
         return button
     }()
     
-    //@IBOutlet private var webView: WKWebView!
-   // @IBOutlet private var progressView: UIProgressView!
-    
     //MARK: - Properties
     weak var delegate: WebViewViewControllerDelegate?
     
@@ -99,10 +96,6 @@ final class WebViewViewController: UIViewController {
     private func didTapBackButton() {
         delegate?.webViewViewControllerDidCancel(self)
     }
-    
-//    @IBAction func didTapBackButton(_ sender: Any) {
-//        delegate?.webViewViewControllerDidCancel(self)
-//    }
 }
 
 //MARK: - Extensions

@@ -27,12 +27,18 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if let token = oauth2Service.authToken {
-           fetchProfile(token)
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.show()
+            }
+            fetchProfile(token)
         } else {
             let authViewController = AuthViewController()
             authViewController.delegate = self
             authViewController.modalPresentationStyle = .fullScreen
-            present(authViewController, animated: true)
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.show()
+                self.present(authViewController, animated: true)
+            }
         }
     }
 
@@ -68,9 +74,9 @@ final class SplashViewController: UIViewController {
 //MARK: - Extensions
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        UIBlockingProgressHUD.show()
         dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            UIBlockingProgressHUD.show()
+            guard let self else { return }
             self.fetchOAuthToken(code)
         }
     }
@@ -96,12 +102,12 @@ extension SplashViewController: AuthViewControllerDelegate {
                 switch result {
                 case .success(let profile):
                     self.profileImageService.fetchProfileImageURL(username: profile.username) { result in }
-                    UIBlockingProgressHUD.dismiss()
                     self.switchToTabBarController()
-                case .failure:
                     UIBlockingProgressHUD.dismiss()
+                case .failure:
                     let alert = Alert(controller: self)
                     alert.showAlert()
+                    UIBlockingProgressHUD.dismiss()
                     break
                 }
             }

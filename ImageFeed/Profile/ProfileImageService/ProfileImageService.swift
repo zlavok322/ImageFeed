@@ -11,7 +11,7 @@ protocol ProfileImageServiceProtocol {
 
 final class ProfileImageService {
     static let shared = ProfileImageService()
-    static let DidChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
     private let storage: OAuth2TokenStorage = OAuth2TokenStorage()
     private let urlSession = URLSession.shared
@@ -31,14 +31,15 @@ final class ProfileImageService {
             var request = URLRequest.makeRequest(path: "users/\(username)", httpMethod: "GET")
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             
-            let task = urlSession.objectTask(for: request) { (result: Result<UserResult, Error>) in
+            let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+                guard let self else { return }
                 switch result {
                 case .success(let userResult):
                     self.avatarURL = userResult.profileImage.medium
                     
                     if let avatarURL = self.avatarURL {
                         NotificationCenter.default.post(
-                            name: ProfileImageService.DidChangeNotification,
+                            name: ProfileImageService.didChangeNotification,
                             object: self,
                             userInfo: ["URL": avatarURL]
                         )

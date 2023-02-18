@@ -1,10 +1,10 @@
 import Foundation
 
 struct ProfileResult: Codable {
-    let username:   String
-    let firstName:  String?
-    let lastName:   String?
-    let bio:         String?
+    let username: String
+    let firstName: String?
+    let lastName: String?
+    let bio: String?
     
     private enum CodingKeys: String, CodingKey {
         case username

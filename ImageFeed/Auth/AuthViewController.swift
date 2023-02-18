@@ -5,26 +5,14 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 final class AuthViewController: UIViewController {
-    //private let ShowWebViewSegueIdentifier = "ShowWebView"
 
     weak var delegate: AuthViewControllerDelegate?
-
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == ShowWebViewSegueIdentifier {
-//            guard
-//                let webViewViewController = segue.destination as? WebViewViewController
-//            else { fatalError("Failed to prepare for \(ShowWebViewSegueIdentifier)") }
-//            webViewViewController.delegate = self
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlack
-        
+        UIBlockingProgressHUD.dismiss()
         addSubviews()
         applyConstraints()
     }
@@ -51,6 +39,8 @@ final class AuthViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         button.setTitleColor(.ypBlack, for: .normal)
         button.backgroundColor = .ypWhite
+        button.clipsToBounds = true
+        button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(loginButtonTap), for: .touchUpInside)
         return button
     }()
@@ -73,7 +63,10 @@ final class AuthViewController: UIViewController {
     
     @objc
     private func loginButtonTap() {
-        switchWebView()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.switchWebView()
+        }
     }
 }
 

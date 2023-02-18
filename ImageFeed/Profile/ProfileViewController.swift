@@ -13,8 +13,8 @@ class ProfileViewController: UIViewController {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "Avatar")
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 35.0
-        
         return imageView
     }()
     
@@ -68,7 +68,7 @@ class ProfileViewController: UIViewController {
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
-                forName: ProfileImageService.DidChangeNotification,
+                forName: ProfileImageService.didChangeNotification,
                 object: nil,
                 queue: .main,
                 using: { [weak self] _ in
@@ -81,7 +81,13 @@ class ProfileViewController: UIViewController {
     
     //MARK: - Objc Methods
     @objc func didTapLogoutButton() {
-        print("didTapLogoutButton")
+        OAuth2TokenStorage().token = nil
+        WebViewCacheCleaner.clean()
+        let splashViewController = SplashViewController()
+        splashViewController.modalPresentationStyle = .fullScreen
+        DispatchQueue.main.async {
+            self.present(splashViewController, animated: true)
+        }
     }
     
     //MARK: - Functions
@@ -112,6 +118,8 @@ class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             avatarImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            avatarImageView.heightAnchor.constraint(equalToConstant: 70),
+            avatarImageView.widthAnchor.constraint(equalToConstant: 70),
             
             nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8),
             nameLabel.leftAnchor.constraint(equalTo: avatarImageView.leftAnchor),

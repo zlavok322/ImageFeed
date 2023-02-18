@@ -14,7 +14,8 @@ final class Alert {
             preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "ok", style: .cancel, handler: { action in })
         alert.addAction(alertAction)
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             self.controller.present(alert, animated: true)
         }
     }
