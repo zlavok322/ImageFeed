@@ -27,15 +27,16 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if let token = oauth2Service.authToken {
-            DispatchQueue.main.async {
-                UIBlockingProgressHUD.show()
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.fetchProfile(token)
             }
-            fetchProfile(token)
         } else {
             let authViewController = AuthViewController()
             authViewController.delegate = self
             authViewController.modalPresentationStyle = .fullScreen
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
                 UIBlockingProgressHUD.show()
                 self.present(authViewController, animated: true)
             }

@@ -85,7 +85,8 @@ class ProfileViewController: UIViewController {
         WebViewCacheCleaner.clean()
         let splashViewController = SplashViewController()
         splashViewController.modalPresentationStyle = .fullScreen
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             self.present(splashViewController, animated: true)
         }
     }
