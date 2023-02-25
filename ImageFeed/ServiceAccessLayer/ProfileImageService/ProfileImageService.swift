@@ -12,6 +12,7 @@ protocol ProfileImageServiceProtocol {
 final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    private var lastTask: URLSessionTask?
     
     private let storage: OAuth2TokenStorage = OAuth2TokenStorage()
     private let urlSession = URLSession.shared
@@ -28,6 +29,8 @@ final class ProfileImageService {
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<UserResult, Error>) -> Void) {
         if let token = storage.token {
+            lastTask?.cancel()
+            
             var request = URLRequest.makeRequest(path: "users/\(username)", httpMethod: "GET")
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             
@@ -46,15 +49,14 @@ final class ProfileImageService {
                     }
                     
                     completion(.success(userResult))
-                    print("Получили картинку Получили картинку Получили картинкуПолучили картинку Получили картинку Получили картинку")
                 case .failure:
-                    print("НЕ ПОЛУЧИЛИ КАРТИНКУ НЕ ПОЛУЧИЛИ КАРТИНКУ НЕ ПОЛУЧИЛИ КАРТИНКУ НЕ ПОЛУЧИЛИ КАРТИНКУ НЕ ПОЛУЧИЛИ КАРТИНКУ НЕ ПОЛУЧИЛИ КАРТИНКУ НЕ ПОЛУЧИЛИ КАРТИНКУ")
+                    completion(.failure(NetworkError.urlSessionError))
                 }
             }
             task.resume()
+            lastTask = task
         } else {
             completion(.failure(TokenError.emptyToken))
-            print("НЕ РАБОТАЕТ ТОКЕН")
         }
     }
 }
