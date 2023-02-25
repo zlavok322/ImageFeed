@@ -5,7 +5,7 @@ struct PhotoResult: Codable {
     let id: String
     let height: Int
     let width: Int
-    let createdAt: Date?
+    let createdAt: String
     let welcomeDescription: String?
     let isLiked: Bool
     
@@ -17,15 +17,12 @@ struct PhotoResult: Codable {
     }
 }
 
-extension PhotoResult {
+struct UrlsResult: Codable {
+    let thumbImageURL: String
+    let largeImageURL: String
     
-    struct UrlsResult: Codable {
-        let thumbImageURL: String
-        let largeImageURL: String
-        
-        private enum CodingKeys: String, CodingKey {
-            case thumbImageURL = "thumb"
-            case largeImageURL = "regular"
-        }
+    private enum CodingKeys: String, CodingKey {
+        case thumbImageURL = "thumb"
+        case largeImageURL = "full"
     }
 }

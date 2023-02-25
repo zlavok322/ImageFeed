@@ -9,29 +9,35 @@ final class ImagesListService {
     private var lastLoadedPage: Int?
     
     func fetchPhotosNextPage() {
-        assert(Thread.isMainThread)
+        //assert(Thread.isMainThread)
         lastTask?.cancel()
         
         let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
-        var request = URLRequest.makeRequest(path: "photos\(nextPage)", httpMethod: "GET")
+        lastLoadedPage = (lastLoadedPage ?? 0) + 1
         
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
+        var request = URLRequest.makeRequest(path: "photos?page=\(nextPage)", httpMethod: "GET")
+        request.setValue("Bearer \(OAuth2TokenStorage().token!)", forHTTPHeaderField: "Authorization")
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<Array<PhotoResult>, Error>) in
             guard let self else { return }
             switch result {
             case .success(let photoResult):
-                let photo = Photo(result: photoResult)
-                self.photos.append(photo)
+                print("добавили фотку")
+                for i in photoResult.indices {
+                    let photo = Photo(result: photoResult[i])
+                    self.photos.append(photo)
+                }
                 
-                NotificationCenter.default.post(
-                    name:ImagesListService.didChangeNotification,
-                    object: self
-                    )
+                NotificationCenter.default.post (
+                    name: ImagesListService.didChangeNotification,
+                    object: self)
                 
             case .failure(let error):
+                print("kakyato hueta proishodit")
                 print(error.localizedDescription)
             }
         }
-        task.resume()
         lastTask = task
+        task.resume()
     }
 } 
