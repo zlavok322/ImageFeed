@@ -8,6 +8,11 @@ class ProfileViewController: UIViewController {
     private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
+    private let gradientAvatar = CAGradientLayer()
+    private let gradientNameLabel = CAGradientLayer()
+    private let gradietnLoginLabel = CAGradientLayer()
+    private let gradientDescriptionLabel = CAGradientLayer()
+    
     //MARK: - Properties
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView()
@@ -49,7 +54,7 @@ class ProfileViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "ipad.and.arrow.forward"), for: .normal)
-        button.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+    
         return button
     }()
     
@@ -57,7 +62,12 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        
         self.view.backgroundColor = .ypBlack
+        
+        addSublayers()
+        startAnimateGradient()
         
         addSubViews()
         applyConstraints()
@@ -81,14 +91,22 @@ class ProfileViewController: UIViewController {
     
     //MARK: - Objc Methods
     @objc func didTapLogoutButton() {
-        OAuth2TokenStorage().token = nil
-        WebViewCacheCleaner.clean()
-        let splashViewController = SplashViewController()
-        splashViewController.modalPresentationStyle = .fullScreen
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.present(splashViewController, animated: true)
-        }
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { _ in
+            OAuth2TokenStorage().token = nil
+            WebViewCacheCleaner.clean()
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration")}
+            let splashViewController = SplashViewController()
+            window.rootViewController = splashViewController
+        })
+        )
+        alert.addAction(UIAlertAction(title: "Нет", style: .default, handler: { _ in
+            alert.dismiss(animated: true)
+        }))
+        present(alert, animated: true)
     }
     
     //MARK: - Functions
@@ -96,6 +114,7 @@ class ProfileViewController: UIViewController {
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
+        endAnimateGradients()
     }
     
     private func updateAvatar() {
@@ -107,7 +126,7 @@ class ProfileViewController: UIViewController {
         avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "DefaultAvatar"), options: [.processor(processor)])
     }
     
-    func addSubViews() {
+    private func addSubViews() {
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(loginNameLabel)
@@ -115,7 +134,21 @@ class ProfileViewController: UIViewController {
         view.addSubview(logoutButton)
     }
     
-    func applyConstraints() {
+    private func addSublayers() {
+        avatarImageView.layer.addSublayer(gradientAvatar)
+        nameLabel.layer.addSublayer(gradientNameLabel)
+        loginNameLabel.layer.addSublayer(gradietnLoginLabel)
+        descriptionLabel.layer.addSublayer(gradientDescriptionLabel)
+    }
+    
+    private func endAnimateGradients() {
+        gradientAvatar.removeFromSuperlayer()
+        gradientNameLabel.removeFromSuperlayer()
+        gradietnLoginLabel.removeFromSuperlayer()
+        gradientDescriptionLabel.removeFromSuperlayer()
+    }
+    
+    private func applyConstraints() {
         NSLayoutConstraint.activate([
             avatarImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
@@ -135,4 +168,33 @@ class ProfileViewController: UIViewController {
             logoutButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -26)
         ])
     }
+    
+    private func startAnimateGradient() {
+        animateGradients(gradient: gradientAvatar, size: CGSize(width: 70, height: 70), cornerRadius: 35, keyAnimation: "avatarLocationChange")
+        animateGradients(gradient: gradientNameLabel, size: CGSize(width: 223, height: 18), cornerRadius: 9, keyAnimation: "nameLocationChange")
+        animateGradients(gradient: gradietnLoginLabel, size: CGSize(width: 89, height: 18), cornerRadius: 9, keyAnimation: "loginLocationGhange")
+        animateGradients(gradient: gradientDescriptionLabel, size: CGSize(width: 67, height: 18), cornerRadius: 9, keyAnimation: "descriptionLocationChange")
+    }
+    
+    private func animateGradients(gradient: CAGradientLayer, size: CGSize, cornerRadius: CGFloat, keyAnimation: String) {
+        gradient.frame = CGRect(origin: .zero, size: size)
+        gradient.locations = [0, 0.1, 0.3]
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+            UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+        ]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.cornerRadius = cornerRadius
+        gradient.masksToBounds = true
+        
+        let gradientAnimation = CABasicAnimation(keyPath: "locations")
+        gradientAnimation.duration = 1.0
+        gradientAnimation.repeatCount = .infinity
+        gradientAnimation.fromValue = [0, 0.1, 0.3]
+        gradientAnimation.toValue = [0, 0.8, 1]
+        gradient.add(gradientAnimation, forKey: keyAnimation)
+    }
+    
 }

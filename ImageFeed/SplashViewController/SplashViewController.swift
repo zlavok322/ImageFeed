@@ -6,6 +6,7 @@ final class SplashViewController: UIViewController {
     private let oauth2Service = OAuth2Service.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+   
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -29,6 +30,7 @@ final class SplashViewController: UIViewController {
         if let token = oauth2Service.authToken {
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
+                UIBlockingProgressHUD.show()
                 self.fetchProfile(token)
             }
         } else {
@@ -37,7 +39,6 @@ final class SplashViewController: UIViewController {
             authViewController.modalPresentationStyle = .fullScreen
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                UIBlockingProgressHUD.show()
                 self.present(authViewController, animated: true)
             }
         }
@@ -90,7 +91,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 self.fetchProfile(token)
             case .failure:
                 UIBlockingProgressHUD.dismiss()
-                
                 break
             }
         }
@@ -106,12 +106,24 @@ extension SplashViewController: AuthViewControllerDelegate {
                     self.switchToTabBarController()
                     UIBlockingProgressHUD.dismiss()
                 case .failure:
-                    let alert = Alert(controller: self)
-                    alert.showAlert()
+                    self.showAlert()
                     UIBlockingProgressHUD.dismiss()
                     break
                 }
             }
+        }
+    }
+    
+    private func showAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message:"Не удалось войти в систему»",
+            preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "ok", style: .cancel, handler: { action in })
+        alert.addAction(alertAction)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.present(alert, animated: true)
         }
     }
 }

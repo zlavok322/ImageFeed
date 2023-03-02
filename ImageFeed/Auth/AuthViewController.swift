@@ -11,8 +11,10 @@ final class AuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loginButton.addTarget(self, action: #selector(loginButtonTap), for: .touchUpInside)
+        
         view.backgroundColor = .ypBlack
-        UIBlockingProgressHUD.dismiss()
+//        UIBlockingProgressHUD.dismiss()
         addSubviews()
         applyConstraints()
     }
@@ -41,7 +43,7 @@ final class AuthViewController: UIViewController {
         button.backgroundColor = .ypWhite
         button.clipsToBounds = true
         button.layer.cornerRadius = 16
-        button.addTarget(self, action: #selector(loginButtonTap), for: .touchUpInside)
+        
         return button
     }()
     

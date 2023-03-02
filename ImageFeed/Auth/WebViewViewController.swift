@@ -29,7 +29,6 @@ final class WebViewViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "chevronBlack.backward"), for: .normal)
-        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         
         return button
     }()
@@ -40,6 +39,7 @@ final class WebViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         addSubviews()
         applyConstraints()
         
