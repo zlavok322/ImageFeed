@@ -30,7 +30,7 @@ final class SplashViewController: UIViewController {
         if let token = oauth2Service.authToken {
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                UIBlockingProgressHUD.show()
+                //UIBlockingProgressHUD.show()
                 self.fetchProfile(token)
             }
         } else {
@@ -74,11 +74,13 @@ final class SplashViewController: UIViewController {
 }
 
 //MARK: - Extensions
+
+// tyt chet podrabvit
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        UIBlockingProgressHUD.show()
-        dismiss(animated: true) { [weak self] in
-            guard let self else { return }
+        DispatchQueue.main.async {[weak self] in
+            guard let self else {return}
+            UIBlockingProgressHUD.show()
             self.fetchOAuthToken(code)
         }
     }
