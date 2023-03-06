@@ -35,10 +35,8 @@ final class ProfileService: ProfileServiceProtocol {
                 let profile = Profile(result: body)
                 self.profile = profile
                 completion(.success(profile))
-                print("ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ")
-            case .failure(let error):
-                print("НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ НЕ ПОЛУЧИЛИ ДАННЫЕ ПРОФИЛЯ")
-                completion(.failure(error))
+            case .failure:
+                completion(.failure(NetworkError.urlSessionError))
             }
         }
         task.resume()

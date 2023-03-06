@@ -2,13 +2,8 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage! {
-        didSet {
-            guard isViewLoaded else { return }
-            imageView.image = image
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+
+    var urlImage: URL?
     
     //MARK: - Actions
     @IBAction private func didTapBackButton(_ sender: Any) {
@@ -22,7 +17,7 @@ final class SingleImageViewController: UIViewController {
     //MARK: - Actions
     @IBAction func didTapShareButton(_ sender: Any) {
         let share = UIActivityViewController(
-            activityItems: [image],
+            activityItems: [imageView.image],
             applicationActivities: nil
         )
         present(share, animated: true, completion: nil)
@@ -35,8 +30,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 3 // 1.25 не подходит
         
-        imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
+        guard let urlImage else { return }
+        setImage(url: urlImage)
     }
     
     //MARK: - Privat function
@@ -55,6 +50,34 @@ final class SingleImageViewController: UIViewController {
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+    }
+    
+    private func setImage(url: URL) {
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure:
+                self.showError()
+            }
+        }
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Что то пошло не так",
+            message: "Попробовать еще раз",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Не надо", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Повтороить", style: .default, handler: { _ in
+            guard let urlImage = self.urlImage else { return }
+            self.setImage(url: urlImage)
+        }))
+        self.present(alert, animated: true)
     }
 }
 
