@@ -2,11 +2,19 @@
 import UIKit
 import Kingfisher
 
-class ProfileViewController: UIViewController {
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfilePresenterProtocol? { get set }
+    func updateProfileDetails(profile: Profile)
+    func updateAvatar(url: URL)
+}
+
+class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
+    var presenter: ProfilePresenterProtocol?
+    
+//    private let profileService = ProfileService.shared
+//    private let profileImageService = ProfileImageService.shared
+//    private var profileImageServiceObserver: NSObjectProtocol?
     
     private let gradientAvatar = CAGradientLayer()
     private let gradientNameLabel = CAGradientLayer()
@@ -67,26 +75,28 @@ class ProfileViewController: UIViewController {
         self.view.backgroundColor = .ypBlack
         
         addSublayers()
-        startAnimateGradient()
-        
         addSubViews()
         applyConstraints()
         
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
+        startAnimateGradient()
         
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main,
-                using: { [weak self] _ in
-                    guard let self else { return }
-                    self.updateAvatar()
-                })
+        presenter?.viewDidLoad()
         
-        updateAvatar()
+//        if let profile = profileService.profile {
+//            updateProfileDetails(profile: profile)
+//        }
+        
+//        profileImageServiceObserver = NotificationCenter.default
+//            .addObserver(
+//                forName: ProfileImageService.didChangeNotification,
+//                object: nil,
+//                queue: .main,
+//                using: { [weak self] _ in
+//                    guard let self else { return }
+//                    self.updateAvatar()
+//                })
+//
+//        updateAvatar()
     }
     
     //MARK: - Objc Methods
@@ -96,8 +106,9 @@ class ProfileViewController: UIViewController {
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { _ in
-            OAuth2TokenStorage().token = nil
-            WebViewCacheCleaner.clean()
+//            OAuth2TokenStorage().token = nil
+//            WebViewCacheCleaner.clean()
+            self.presenter?.logout()
             guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration")}
             let splashViewController = SplashViewController()
             window.rootViewController = splashViewController
@@ -110,18 +121,18 @@ class ProfileViewController: UIViewController {
     }
     
     //MARK: - Functions
-    private func updateProfileDetails(profile: Profile) {
+      func updateProfileDetails(profile: Profile) {
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
         endAnimateGradients()
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageUrl = profileImageService.avatarURL,
-            let url = URL(string: profileImageUrl)
-        else { return }
+      func updateAvatar(url: URL) {
+//        guard
+//            let profileImageUrl = profileImageService.avatarURL,
+//            let url = URL(string: profileImageUrl)
+//        else { return }
         let processor = RoundCornerImageProcessor(cornerRadius: 35.0)
         avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "DefaultAvatar"), options: [.processor(processor)])
     }

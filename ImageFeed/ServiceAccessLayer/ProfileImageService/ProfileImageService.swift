@@ -5,11 +5,11 @@ enum TokenError: Error {
 }
 
 protocol ProfileImageServiceProtocol {
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void)
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void)
     var avatarURL: String? { get }
 }
 
-final class ProfileImageService {
+final class ProfileImageService: ProfileImageServiceProtocol {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private var lastTask: URLSessionTask?
@@ -27,7 +27,7 @@ final class ProfileImageService {
         }
     }
     
-    func fetchProfileImageURL(username: String, completion: @escaping (Result<UserResult, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void) {
         if let token = storage.token {
             lastTask?.cancel()
             

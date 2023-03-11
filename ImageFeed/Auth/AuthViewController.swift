@@ -22,6 +22,10 @@ final class AuthViewController: UIViewController {
     private func switchWebView() {
         let webViewController = WebViewViewController()
         webViewController.delegate = self
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        webViewController.presenter = webViewPresenter
+        webViewPresenter.view = webViewController
         webViewController.modalPresentationStyle = .fullScreen
         present(webViewController, animated: true)
     }

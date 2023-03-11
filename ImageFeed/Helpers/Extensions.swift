@@ -37,7 +37,7 @@ extension URLRequest {
     static func makeRequest(
         path: String,
         httpMethod: String,
-        baseURL: URL = Constants.defaultBaseURL
+        baseURL: URL = AuthConfiguration.standart.defaultBaseURL
     ) -> URLRequest {
         var request = URLRequest(url: URL(string: path, relativeTo: baseURL)!)
         request.httpMethod = httpMethod
