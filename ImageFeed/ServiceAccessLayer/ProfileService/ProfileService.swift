@@ -1,25 +1,17 @@
 import Foundation
 
-protocol ProfileServiceProtocol {
+public protocol ProfileServiceProtocol {
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void)
     var profile: Profile? { get }
 }
 
-final class ProfileService: ProfileServiceProtocol {
-    static let shared: ProfileServiceProtocol = ProfileService()
+public final class ProfileService {
+    static let shared = ProfileService()
 
     private let urlSession = URLSession.shared
     private var lastTask: URLSessionTask?
-    private var tempProfile: Profile?
-    
-    var profile: Profile? {
-        get {
-            return tempProfile
-        }
-        set {
-            tempProfile = newValue
-        }
-    }
+//    private var tempProfile: Profile?
+    private(set) var profile: Profile?
 
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)

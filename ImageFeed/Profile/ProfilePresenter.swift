@@ -4,6 +4,8 @@ public protocol ProfilePresenterProtocol {
     var view: ProfileViewControllerProtocol? { get set }
     func viewDidLoad()
     func logout()
+    func loadProfileImageURL()
+    var profileService: ProfileService { get set }
 }
 
 final class ProfilePresenter: ProfilePresenterProtocol {
@@ -11,7 +13,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     //MARK: - Properties
     weak var view: ProfileViewControllerProtocol?
     
-    private let profileService = ProfileService.shared
+    var profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     

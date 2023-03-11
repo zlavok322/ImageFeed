@@ -1,13 +1,13 @@
 import UIKit
  
-protocol ImageListCellDelegate: AnyObject {
-    func imageListCellDidTapLike(_ cell: ImagesListCell)
+protocol ImagesListCellDelegate: AnyObject {
+    func imagesListCellDidTapLike(_ cell: ImagesListCell)
 }
 
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
     
-    weak var delegate: ImageListCellDelegate?
+    weak var delegate: ImagesListCellDelegate?
     
     @IBOutlet weak var imageViewCell: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
@@ -20,7 +20,7 @@ final class ImagesListCell: UITableViewCell {
     }
     
     @IBAction func likeButtonClicked(_ sender: Any) {
-        delegate?.imageListCellDidTapLike(self)
+        delegate?.imagesListCellDidTapLike(self)
     }
     
     func setIsLiked(isLiked: Bool) {

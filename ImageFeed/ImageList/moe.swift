@@ -1,3 +1,7 @@
+/*
+ 
+ где то косяк
+ 
 import UIKit
 import Kingfisher
 
@@ -7,17 +11,13 @@ public protocol ImagesListViewControllerProtocol: AnyObject {
     func updateTableViewAnimated(photos: [Photo])
 }
 
-final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
+final class ImagesListViewController: UIViewController {
     
 //MARK: - Properties
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
-    var presenter: ImagesListPresenterProtocol?
-    var photos: [Photo] = []
+    private var photos: [Photo] = []
     
-    func configure(_ presenter: ImagesListPresenterProtocol) {
-        self.presenter = presenter
-        self.presenter?.view = self
-    }
+    var presenter: ImagesListPresenterProtocol?
    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -35,7 +35,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         super.viewDidLoad()
 //        imageListService.fetchPhotosNextPage()
 //        photos = imagesListService.photos
-        configure(ImageListPresenter())
+        
         presenter?.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
@@ -168,3 +168,4 @@ extension ImagesListViewController: ImagesListCellDelegate {
         }
     }
 }
+*/

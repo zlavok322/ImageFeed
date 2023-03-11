@@ -80,6 +80,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         
         startAnimateGradient()
         
+        configure(ProfilePresenter())
         presenter?.viewDidLoad()
         
 //        if let profile = profileService.profile {
@@ -121,11 +122,16 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     }
     
     //MARK: - Functions
-      func updateProfileDetails(profile: Profile) {
+      internal func updateProfileDetails(profile: Profile) {
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
         endAnimateGradients()
+    }
+    
+    func configure(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        self.presenter?.view = self
     }
     
       func updateAvatar(url: URL) {
