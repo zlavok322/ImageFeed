@@ -22,6 +22,7 @@ final class WebViewViewController: UIViewController, WebViewViewControllerProtoc
     private var webView: WKWebView = {
         var webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.accessibilityIdentifier = "UnsplashWebView"
         
         return webView
     }()

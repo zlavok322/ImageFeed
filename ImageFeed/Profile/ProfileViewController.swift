@@ -62,7 +62,8 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "ipad.and.arrow.forward"), for: .normal)
-    
+        button.accessibilityIdentifier = "logoutButton"
+        
         return button
     }()
     
