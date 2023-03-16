@@ -2,7 +2,7 @@
 import UIKit
 import Kingfisher
 
-public protocol ProfileViewControllerProtocol: AnyObject {
+protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfilePresenterProtocol? { get set }
     func updateProfileDetails(profile: Profile)
     func updateAvatar(url: URL)
@@ -81,7 +81,6 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         
         startAnimateGradient()
         
-        configure(ProfilePresenter())
         presenter?.viewDidLoad()
         
 //        if let profile = profileService.profile {
@@ -128,11 +127,6 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         loginNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
         endAnimateGradients()
-    }
-    
-    func configure(_ presenter: ProfilePresenterProtocol) {
-        self.presenter = presenter
-        self.presenter?.view = self
     }
     
       func updateAvatar(url: URL) {

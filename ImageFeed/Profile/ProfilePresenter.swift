@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol ProfilePresenterProtocol {
+protocol ProfilePresenterProtocol {
     var view: ProfileViewControllerProtocol? { get set }
     func viewDidLoad()
     func logout()
@@ -14,7 +14,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
     
     var profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
     func viewDidLoad() {
@@ -30,7 +29,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     func loadProfileImageURL() {
         guard
-            let profileImageURL = profileImageService.avatarURL,
+            let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
         
@@ -48,7 +47,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
     
     func logout() {
-        OAuth2TokenStorage().token = nil
+        OAuth2TokenStorage().token?.removeAll()
         WebViewCacheCleaner.clean()
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol ProfileServiceProtocol {
+ protocol ProfileServiceProtocol {
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void)
     var profile: Profile? { get }
 }
@@ -13,7 +13,7 @@ public final class ProfileService {
 //    private var tempProfile: Profile?
     private(set) var profile: Profile?
 
-    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
         assert(Thread.isMainThread)
         lastTask?.cancel()
 
@@ -26,7 +26,7 @@ public final class ProfileService {
             case .success(let body):
                 let profile = Profile(result: body)
                 self.profile = profile
-                completion(.success(profile))
+                completion(.success(body))
             case .failure:
                 completion(.failure(NetworkError.urlSessionError))
             }

@@ -22,7 +22,7 @@ final class ImageFeedUITests: XCTestCase {
         let loginTextField = webView.descendants(matching: .textField).element
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         loginTextField.tap()
-        loginTextField.typeText("email")
+        loginTextField.typeText("email)
         webView.swipeUp()
         
         // password
@@ -85,11 +85,9 @@ final class ImageFeedUITests: XCTestCase {
         sleep(3)
         
         // check labels
-        XCTAssertTrue(app.staticTexts["name"].exists)
+        XCTAssertTrue(app.staticTexts["Vyacheslav Shestakov"].exists)
         sleep(2)
-        XCTAssertTrue(app.staticTexts["@username"].exists)
-        sleep(2)
-        XCTAssertTrue(app.staticTexts["description"].exists)
+        XCTAssertTrue(app.staticTexts["@zlavok322"].exists)
         sleep(2)
         let logoutButton = app.buttons["logoutButton"]
         sleep(5)

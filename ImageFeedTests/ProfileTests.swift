@@ -1,35 +1,95 @@
-//
-//  ProfileTests.swift
-//  ImageFeedTests
-//
-//  Created by Слава Шестаков on 12.03.2023.
-//
-
+@testable import ImageFeed
 import XCTest
 
-final class ProfileTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+final class ProfileViewTests: XCTestCase {
+    
+    func testViewControllerCallsViewDidLoad() {
+        let viewController = ProfileViewController()
+        let presenter = ProfilePresenterSpy()
+        viewController.presenter = presenter
+        presenter.view = viewController
+        
+        _ = viewController.view
+        
+        XCTAssertTrue(presenter.viewDidLoadCalled)
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+    func testPresenterCallsUpdates() {
+        let viewController = ProfileViewControllerSpy()
+        let presenter = ProfilePresenter()
+        viewController.presenter = presenter
+        presenter.view = viewController
+        
+        let profileServiceDummy = ProfileServiceDummy()
+        let profileImageServiceDummy = ProfileImageServiceDummy()
+        
+//        let expectation = expectation(description: "Test completed")
+        
+        profileServiceDummy.fetchProfile("") { result in
+            switch result {
+            case .success:
+                profileImageServiceDummy.fetchProfileImageURL(username: "") { _ in
+                    presenter.viewDidLoad()
+                    
+                    XCTAssertTrue(viewController.updateProfileDetailsCalled)
+                    XCTAssertTrue(viewController.updateAvatarCalled)
+                    
+//                    expectation.fulfill()
+                }
+            case .failure:
+                XCTFail()
+            }
         }
+        
+//        waitForExpectations(timeout: 10)
     }
+    
+}
 
+final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
+    var presenter: ImageFeed.ProfilePresenterProtocol?
+
+    var updateAvatarCalled = false
+    var updateProfileDetailsCalled = false
+    
+    func updateAvatar(url: URL) {
+        updateAvatarCalled = true
+    }
+    
+    func updateProfileDetails(profile: ImageFeed.Profile) {
+        updateProfileDetailsCalled = true
+    }
+}
+
+final class ProfilePresenterSpy: ProfilePresenterProtocol {
+    
+    var profileService: ImageFeed.ProfileService = ImageFeed.ProfileService()
+    var viewDidLoadCalled: Bool = false
+    var view: ImageFeed.ProfileViewControllerProtocol?
+    
+    func viewDidLoad() {
+        viewDidLoadCalled = true
+    }
+    
+    func logout() {
+        
+    }
+    
+    func loadProfileImageURL() {
+        
+    }
+}
+
+final class ProfileServiceDummy: ProfileServiceProtocol {
+    func fetchProfile(_ token: String, completion: @escaping (Result<ImageFeed.Profile, Error>) -> Void) {
+        let profile = Profile(result: ProfileResult(username: "", firstName: "", lastName: "", bio: ""))
+        completion(.success(profile))
+    }
+    var profile: ImageFeed.Profile?
+}
+
+final class ProfileImageServiceDummy: ProfileImageServiceProtocol {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<ImageFeed.UserResult, Error>) -> Void) {}
+    
+    var avatarURL: String?
 }

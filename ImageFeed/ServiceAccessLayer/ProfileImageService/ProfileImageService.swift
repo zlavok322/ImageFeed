@@ -9,7 +9,7 @@ protocol ProfileImageServiceProtocol {
     var avatarURL: String? { get }
 }
 
-final class ProfileImageService: ProfileImageServiceProtocol {
+final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private var lastTask: URLSessionTask?
@@ -27,7 +27,7 @@ final class ProfileImageService: ProfileImageServiceProtocol {
         }
     }
     
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         if let token = storage.token {
             lastTask?.cancel()
             
@@ -38,7 +38,7 @@ final class ProfileImageService: ProfileImageServiceProtocol {
                 guard let self else { return }
                 switch result {
                 case .success(let userResult):
-                    self.avatarURL = userResult.profileImage.medium
+                    self.avatarURL = userResult.profileImage.small
                     
                     if let avatarURL = self.avatarURL {
                         NotificationCenter.default.post(
@@ -48,7 +48,7 @@ final class ProfileImageService: ProfileImageServiceProtocol {
                         )
                     }
                     
-                    completion(.success(userResult))
+                    completion(.success(userResult.profileImage.small))
                 case .failure:
                     completion(.failure(NetworkError.urlSessionError))
                 }

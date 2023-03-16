@@ -1,7 +1,7 @@
 import UIKit
 import Kingfisher
 
-public protocol ImagesListViewControllerProtocol: AnyObject {
+ protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListPresenterProtocol? { get set }
     var photos: [Photo] { get set }
     func updateTableViewAnimated(photos: [Photo])
@@ -11,6 +11,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     
 //MARK: - Properties
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
+    private var imageListServiceObserver: NSObjectProtocol?
     var presenter: ImagesListPresenterProtocol?
     var photos: [Photo] = []
     
@@ -35,7 +36,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         super.viewDidLoad()
 //        imageListService.fetchPhotosNextPage()
 //        photos = imagesListService.photos
-        configure(ImageListPresenter())
         presenter?.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }

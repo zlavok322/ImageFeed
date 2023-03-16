@@ -5,6 +5,7 @@ import SwiftKeychainWrapper
 protocol OAuth2TokenStorageProtocol {
     var token: String? {get set}
 }
+
 final class OAuth2TokenStorage: OAuth2TokenStorageProtocol {
     private enum Keys: String {
         case token
@@ -12,11 +13,7 @@ final class OAuth2TokenStorage: OAuth2TokenStorageProtocol {
     
     var token: String? {
         get {
-            if let token = KeychainWrapper.standard.string(forKey: Keys.token.rawValue) {
-                return token
-            } else {
-                return nil
-            }
+            return KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
         }
         set {
             if let token = newValue {

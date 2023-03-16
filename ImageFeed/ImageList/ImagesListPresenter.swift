@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol ImagesListPresenterProtocol {
+ protocol ImagesListPresenterProtocol: AnyObject {
     var view: ImagesListViewControllerProtocol? { get set }
     var imagesListService: ImagesListService { get set }
     func viewDidLoad()
@@ -9,7 +9,7 @@ public protocol ImagesListPresenterProtocol {
 
 final class ImageListPresenter: ImagesListPresenterProtocol {
     
-    weak var view: ImagesListViewControllerProtocol?
+    var view: ImagesListViewControllerProtocol?
     var imagesListService = ImagesListService()
     private var imageListServiceObserver: NSObjectProtocol?
     
@@ -22,14 +22,14 @@ final class ImageListPresenter: ImagesListPresenterProtocol {
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 
                 let photos = self.imagesListService.photos
                 self.view?.updateTableViewAnimated(photos: photos)
             }
     }
 
-    internal func fetchPhotosNextPage() {
+     func fetchPhotosNextPage() {
         imagesListService.fetchPhotosNextPage()
     }
 }
