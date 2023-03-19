@@ -6,14 +6,23 @@ protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-final class WebViewViewController: UIViewController {
+public protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
+}
+
+final class WebViewViewController: UIViewController, WebViewViewControllerProtocol {
     
+    var presenter: WebViewPresenterProtocol?
     private var estimatedProgressObservation: NSKeyValueObservation?
     
-    //MARK: - Outlets
+    //MARK: - Properties
     private var webView: WKWebView = {
         var webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.accessibilityIdentifier = "UnsplashWebView"
         
         return webView
     }()
@@ -33,7 +42,6 @@ final class WebViewViewController: UIViewController {
         return button
     }()
     
-    //MARK: - Properties
     weak var delegate: WebViewViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -43,32 +51,23 @@ final class WebViewViewController: UIViewController {
         addSubviews()
         applyConstraints()
         
-        var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString)!
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        
-        let url = urlComponents.url!
-        
-        let request = URLRequest(url: url)
-        webView.load(request)
-        
         webView.navigationDelegate = self
+        presenter?.viewDidLoad()
         
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
              options: [],
              changeHandler: { [weak self] _ , _ in
                  guard let self else { return }
-                 self.updateProgress()
+                 self.presenter?.didUpdateProgressValue(self.webView.estimatedProgress)
              })
     }
     
     //MARK: - Private functions
+    
+    func load(request: URLRequest) {
+        webView.load(request)
+    }
     
     private func applyConstraints() {
         NSLayoutConstraint.activate([
@@ -113,21 +112,20 @@ extension WebViewViewController: WKNavigationDelegate {
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let items = urlComponents.queryItems,
-            let codeItem = items.first(where: { $0.name == "code" })
-        { return codeItem.value }
-        else { return nil }
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
+        }
+        return nil
     }
 }
 
 extension WebViewViewController {
     
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+    
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
     }
 }

@@ -119,9 +119,9 @@ extension SplashViewController: AuthViewControllerDelegate {
     private func showAlert() {
         let alert = UIAlertController(
             title: "Что-то пошло не так",
-            message:"Не удалось войти в систему»",
+            message:"Не удалось войти в систему",
             preferredStyle: .alert)
-        let alertAction = UIAlertAction(title: "ok", style: .cancel, handler: { action in })
+        let alertAction = UIAlertAction(title: "Ок", style: .cancel, handler: { action in})
         alert.addAction(alertAction)
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }

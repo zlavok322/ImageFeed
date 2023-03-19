@@ -36,6 +36,7 @@
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Stub" translatesAutoresizingMaskIntoConstraints="NO" id="DcZ-ob-GdL" userLabel="imageCell">
                                                     <rect key="frame" x="16" y="4" width="382" height="212"/>
+                                                    <accessibility key="accessibilityConfiguration" identifier="imageCell"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                             <integer key="value" value="16"/>
@@ -51,6 +52,9 @@
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ubS-in-v3V" userLabel="Like Button">
                                                     <rect key="frame" x="356" y="4" width="42" height="42"/>
+                                                    <accessibility key="accessibilityConfiguration" identifier="like">
+                                                        <bool key="isElement" value="YES"/>
+                                                    </accessibility>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="like_button_no_active"/>
                                                     <connections>
@@ -78,6 +82,10 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="mFx-AS-XJ1"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="ulF-d5-gwN"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -129,6 +137,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J02-kv-x3X">
                                 <rect key="frame" x="8" y="56" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="backButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="ZAm-qQ-1Vk"/>
                                     <constraint firstAttribute="width" constant="48" id="mtA-gr-VN5"/>

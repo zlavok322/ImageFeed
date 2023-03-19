@@ -1,13 +1,24 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+ protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListPresenterProtocol? { get set }
+    var photos: [Photo] { get set }
+    func updateTableViewAnimated(photos: [Photo])
+}
+
+final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
     
-//MARK: - Private property
+//MARK: - Properties
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
-    private let imageListService = ImagesListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
-    private var photos: [Photo] = []
+    var presenter: ImagesListPresenterProtocol?
+    var photos: [Photo] = []
+    
+    func configure(_ presenter: ImagesListPresenterProtocol) {
+        self.presenter = presenter
+        self.presenter?.view = self
+    }
    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -23,22 +34,10 @@ final class ImagesListViewController: UIViewController {
     //MARK: - LyfeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageListService.fetchPhotosNextPage()
-        photos = imageListService.photos
-        
-        tableView.dataSource = self
-        tableView.delegate = self
+//        imageListService.fetchPhotosNextPage()
+//        photos = imagesListService.photos
+        presenter?.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        
-        imageListServiceObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
-            object: nil,
-            queue: .main,
-            using: { [weak self] _ in
-                guard let self else { return }
-                self.updateTableViewAnimated()
-            }
-        )
     }
     //MARK: - Private function
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
@@ -66,7 +65,7 @@ final class ImagesListViewController: UIViewController {
         gradientCell.add(gradientChangeAnimation, forKey: "cellLocationChange")
         
         cell.imageViewCell.kf.indicatorType = .activity
-        cell.imageViewCell.kf.setImage(with: url, placeholder: UIImage(named: "Stub"), options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)]) { _ in
+        cell.imageViewCell.kf.setImage(with: url, placeholder: UIImage(named: "Stub")) { _ in
             gradientCell.removeFromSuperlayer()
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
@@ -74,10 +73,10 @@ final class ImagesListViewController: UIViewController {
     }
     
     
-    func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imageListService.photos.count
-        photos = imageListService.photos
+    func updateTableViewAnimated(photos: [Photo]) {
+        let oldCount = self.photos.count
+        let newCount = photos.count
+        self.photos = photos
         if oldCount != newCount {
             tableView.performBatchUpdates {
                 let indexPaths = (oldCount..<newCount).map { i in
@@ -106,21 +105,6 @@ extension ImagesListViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
     }
-    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        guard !photos.isEmpty else { return 0 }
-//
-//        let cell = tableView.cellForRow(at: indexPath) as? ImagesListCell
-//        guard let image = cell?.imageViewCell.image else { return 0 }
-//
-//        let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-//        let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
-//        let imageWidth = image.size.width
-//        let scale = imageViewWidth / imageWidth
-//        let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
-//        return cellHeight
-//
-//    }
 }
 
 //MARK: - UITableViewDataSource
@@ -143,32 +127,29 @@ extension ImagesListViewController: UITableViewDataSource {
     //вызывается прямо перед тем, как ячейка таблицы будет показана на экране
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
-            imageListService.fetchPhotosNextPage()
+//            imageListService.fetchPhotosNextPage()
+            presenter?.fetchPhotosNextPage()
         }
     }
 }
 
-extension ImagesListViewController: ImageListCellDelegate {
+//MARK: - ImagesListCellDelegate
+extension ImagesListViewController: ImagesListCellDelegate {
     
-    func imageListCellDidTapLike(_ cell: ImagesListCell) {
-        
+    func imagesListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
-        // Покажем лоадер
+                
         UIBlockingProgressHUD.show()
-        
-        imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+        presenter?.imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
             switch result {
             case .success:
-                // Синхронизируем массив картинок с сервисом
-                self.photos = self.imageListService.photos
-                // Изменим индикацию лайка картинки
-                cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
-                // Уберём лоадер
+                self.photos = self.presenter?.imagesListService.photos ?? []
+                cell.setIsLiked(isLiked: !photo.isLiked)
                 UIBlockingProgressHUD.dismiss()
-            case .failure:
-                // Уберём лоадер
+            case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
+                print(error)
                 self.showAlert()
             }
         }

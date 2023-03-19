@@ -5,7 +5,7 @@ enum TokenError: Error {
 }
 
 protocol ProfileImageServiceProtocol {
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void)
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void)
     var avatarURL: String? { get }
 }
 
@@ -27,7 +27,7 @@ final class ProfileImageService {
         }
     }
     
-    func fetchProfileImageURL(username: String, completion: @escaping (Result<UserResult, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         if let token = storage.token {
             lastTask?.cancel()
             
@@ -38,7 +38,7 @@ final class ProfileImageService {
                 guard let self else { return }
                 switch result {
                 case .success(let userResult):
-                    self.avatarURL = userResult.profileImage.medium
+                    self.avatarURL = userResult.profileImage.small
                     
                     if let avatarURL = self.avatarURL {
                         NotificationCenter.default.post(
@@ -48,7 +48,7 @@ final class ProfileImageService {
                         )
                     }
                     
-                    completion(.success(userResult))
+                    completion(.success(userResult.profileImage.small))
                 case .failure:
                     completion(.failure(NetworkError.urlSessionError))
                 }
